@@ -1,0 +1,47 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  static = false;}PARSER_BEGIN(Template)package com.hoiio;
+
+import java.io.PrintStream;
+
+public class Template{  public static void main(String args []) throws ParseException  {    Template parser = new Template(System.in);
+    parser.Start(System.out);  }
+
+  double previousValue = 0.0;}PARSER_END(Template)SKIP :{    "\r" | "\t" | "\n"}TOKEN :{
+  < VAR : "{"(< ALPHANUM >)+"}" >
+| < #ALPHANUM : ["a"-"z","A"-"Z","0"-"9"] >
+| < OCURL : (< OPAR >){2} >| < CCURL : (< CPAR >){2} >| < #OPAR : "{" >
+| < #CPAR : "}" >}
+
+TOKEN :
+{  < IF : "if" >
+}
+
+TOKEN :
+{  < OTHER : (~["{","}"])+ >
+}
+void Start(PrintStream printStream) throws NumberFormatException :
+{
+  Token t;
+}{
+  (
+      t = < OTHER >
+      {        printStream.println(t.image);
+      }
+|
+      t = < VAR >
+      {
+        printStream.println("#" + t.image.substring(1,t.image.length()-1));
+      }
+|
+	  < OCURL >
+	  {
+	    printStream.println("{");
+	  }
+|      < CCURL >
+      {
+        printStream.println("}");
+      }
+  )*
+  < EOF >
+}
